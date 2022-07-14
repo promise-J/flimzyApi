@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "16.15.0",
+    "npm": "8.9.0"
+},
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "dev": "nodemon server/server.js"
   },
   "keywords": [],
   "author": "",
