@@ -15,6 +15,7 @@ app.use(express.json())
 app.use(cors({
     origin: ['https://flimzy-chat-app.herokuapp.com', 'http://localhost:3000', 'https://62d02c5e03120000085b0262--flimzyapp.netlify.app/'],
     credentials: true,
+    methods: ["GET", "POST", "DELETE", "PUT"]
 }))
 
 
