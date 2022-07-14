@@ -13,7 +13,7 @@ const app = express()
 app.use(cookieParser())
 app.use(express.json())
 app.use(cors({
-    origin: ['https://flimzy-chat-app.herokuapp.com', 'http://localhost:3000'],
+    origin: ['https://flimzy-chat-app.herokuapp.com', 'http://localhost:3000', 'https://62d02c5e03120000085b0262--flimzyapp.netlify.app/'],
     credentials: true,
 }))
 
@@ -77,7 +77,7 @@ const server = app.listen(PORT, ()=>{
 
 const sock = socketIo(server, {
     cors: {
-        origin: ['https://flimzy-chat-app.herokuapp.com','http://localhost:3000']
+        origin: ['https://flimzy-chat-app.herokuapp.com','http://localhost:3000', 'https://62d02c5e03120000085b0262--flimzyapp.netlify.app/']
         // methods: ["GET", "POST"]
     }
 })
