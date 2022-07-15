@@ -76,7 +76,7 @@ const server = app.listen(PORT, ()=>{
 
 const sock = socketIo(server, {
     cors: {
-        origin: 'https://flimzyapp.netlify.app/chat'
+        origin: 'https://flimzyapp.netlify.app'
         // methods: ["GET", "POST"]
     }
 })
