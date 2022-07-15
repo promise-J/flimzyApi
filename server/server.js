@@ -10,10 +10,10 @@ const socketIo = require('socket.io')
 
 const app = express()
 
+app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 
-app.use(cors())
 
 
 const imageStorage = multer.diskStorage({
@@ -55,6 +55,7 @@ const _dirname1 = path.resolve()
 
 app.get('/', (req, res)=>{
     console.log('dev')
+    
     res.send('API is running sucessfully oo')
 })
 
@@ -75,7 +76,7 @@ const server = app.listen(PORT, ()=>{
 
 const sock = socketIo(server, {
     cors: {
-        origin: ['https://flimzy-chat-app.herokuapp.com','http://localhost:3000', 'https://62d02c5e03120000085b0262--flimzyapp.netlify.app/']
+        origin: 'https://flimzyapp.netlify.app/chat'
         // methods: ["GET", "POST"]
     }
 })

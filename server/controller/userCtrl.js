@@ -24,6 +24,8 @@ module.exports = {
         //     path: '/',
         //     sameSite: 'none'
         // })
+        // res.cookie('secret', token)
+        res.cookie('secret', token)
         return res.status(200).json({token})
     },
     getUsers: async (req, res) => {
