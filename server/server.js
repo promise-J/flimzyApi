@@ -76,9 +76,10 @@ const server = app.listen(PORT, ()=>{
 
 const sock = socketIo(server, {
     cors: {
-        origin: 'https://flimzyapp.netlify.app',
-        methods: ["GET", "POST"]
-    }
+        origin: "*",
+        methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      },
 })
 
 sock.on('connection', (socket)=>{
