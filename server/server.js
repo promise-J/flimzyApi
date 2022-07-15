@@ -96,10 +96,9 @@ sock.on('connection', (socket)=>{
         const users = newMessage.chat.users
         if(!users) return console.log('no user in chat')
         users.forEach(user=>{
-            if(user==newMessage.sender._id){
-                return
+            if(user._id==newMessage.sender._id){
             }else{
-                socket.in(user).emit('receive message', newMessage)
+                socket.in(user._id).emit('receive message', newMessage)
             }
         })
     })
