@@ -42,11 +42,13 @@ app.use('/images', express.static('images'));
 
 app.post('/imageupload', imageUpload.single('image'), (req, res)=>{
     try {
+        console.log(req.file.filename, 'file name here')
         return res.status(200).json(req.file.filename)
     } catch (error) {
         return res.status(400).json(error)
     }
 })
+
 app.use('/user', require('./routes/userRoute'))
 app.use('/message', require('./routes/messageRoute'))
 app.use('/chat', require('./routes/chatRoute'))
@@ -59,13 +61,6 @@ app.get('/', (req, res)=>{
     res.send('API is running sucessfully oo')
 })
 
-// if(process.env.NODE_ENV==='production'){
-//     app.use(express.static(path.join(_dirname1, '/client/build')));
-    
-//     app.get('*', (req, res)=>{
-//         res.sendFile(path.resolve(_dirname1, 'client', 'build', 'index.html'))
-//     })
-// }
 
 
 const PORT = process.env.PORT || 5000
