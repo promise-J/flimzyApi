@@ -19,7 +19,21 @@ const userSchema = new mongoose.Schema({
     picture: {
         type: String,
         default: 'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'
-    }
+    },
+    gender: {
+        type: String
+    },
+    about: {
+        type: String
+    },
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    request: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {timestamps: true})
 
 userSchema.pre('save', async function save(next){

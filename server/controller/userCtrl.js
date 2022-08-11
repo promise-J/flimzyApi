@@ -5,7 +5,7 @@ module.exports = {
     register: async (req, res) => {
         const { username, password, email, picture } = req.body
         if (!username || !password || !email) return res.status(400).json('Fields cannot be empty')
-        const userExists = await User.findOne({ $or: [{ email }, { username }] })
+        const userExists = await User.findOne({email})
         if (userExists) return res.status(400).json('User already exist')
         const user = await new User({ ...req.body }).save()
         return res.status(200).json(user)
@@ -28,6 +28,16 @@ module.exports = {
         res.cookie('secret', token)
         return res.status(200).json({token})
     },
+    updateUser: async(req, res)=>{
+        try {
+            const newUser = await User.findByIdAndUpdate(req.user._id, {
+                $set: req.body
+            }, {new: true})
+            return res.status(200).json(newUser)
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+    },
     getUsers: async (req, res) => {
         const { search } = req.query
         const keyword = req.query.search ? { $or: [{ username: { $regex: search, $options: "i" } }, { email: { $regex: search, $options: "i" } }] } : {}
@@ -44,5 +54,36 @@ module.exports = {
         if (!key) return res.status(200).json('Please Login')
         res.clearCookie('secretToken')
         return res.status(200).json('Logged out')
+    },
+    sendFriendRequest: async(req, res)=>{
+        try{
+            let result = await User.findByIdAndUpdate(req.params.userId, {
+                $addToSet: {request: req.user._id}
+            },{new: true})
+           
+            return res.status(200).json({request: req.user._id})
+        }catch(error){
+            return res.status(500).json(error)
+        }
+    },
+    getFriendRequest: async(req, res)=>{
+        try {
+            const user = await User.findById(req.user._id)
+            const result = await User.find({_id: {$in: user.request}})
+            return res.status(200).json(result)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(error)
+        }
+    },
+    removeFriendRequest: async(req, res)=>{
+        try{
+            const result = await User.findByIdAndUpdate(req.user._id,{
+                $pull: {request: req.params.userId}
+            },{new: true})
+            return res.status(200).json('Request Rejected')
+        }catch(error){
+            return res.status(500).json(error)
+        }
     }
 }

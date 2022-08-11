@@ -4,8 +4,8 @@ const colors = require('colors')
 const cors = require('cors')
 const db =  require('./config/db')
 const cookieParser = require('cookie-parser')
-const multer = require('multer')
 const path = require('path')
+const expImg = require("express-fileupload")
 const socketIo = require('socket.io')
 
 const app = express()
@@ -13,45 +13,22 @@ const app = express()
 app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
+// app.use(express.urlencoded({extended: true}))
 
 
+app.use(
+    expImg({
+      useTempFiles: true,
+    })
+  );
 
-const imageStorage = multer.diskStorage({
-    destination: 'images',
-    filename: (req, file,cb)=>{
-        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
-    }
-})
-
-const imageUpload = multer({
-    storage: imageStorage,
-    limits: {
-        fileSize: 3000000
-    },
-    fileFilter(req, file, cb){
-        if(!file) return res.status(400).json('Please choose an image')
-        if(!file.originalname.match(/\.(png|jpg|jpeg)$/i)){
-            return cb(new Error('Please Upload an image'))
-        }
-        cb(null, true)
-    }
-})
-
-//router here
-app.use('/images', express.static('images'));
-
-app.post('/imageupload', imageUpload.single('image'), (req, res)=>{
-    try {
-        console.log(req.file.filename, 'file name here')
-        return res.status(200).json(req.file.filename)
-    } catch (error) {
-        return res.status(400).json(error)
-    }
-})
 
 app.use('/user', require('./routes/userRoute'))
 app.use('/message', require('./routes/messageRoute'))
 app.use('/chat', require('./routes/chatRoute'))
+app.use('/status', require('./routes/statusRoute'))
+app.use('/img', require('./routes/imgRoute'))
+app.use('/sendmail', require('./routes/mailRoute'))
 const _dirname1 = path.resolve()
 
 
@@ -97,9 +74,16 @@ sock.on('connection', (socket)=>{
             }
         })
     })
+
+    socket.on('videocall', (info)=>{
+        socket.in(info.chatId).emit('videocall', info)
+    })
+
+
     socket.on('typing', (chatId)=>{
         socket.in(chatId).emit('typing')
     })
+
     socket.on('stop typing', (chatId)=>{
         socket.in(chatId).emit('stop typing')
     })

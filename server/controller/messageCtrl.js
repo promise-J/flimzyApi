@@ -4,16 +4,22 @@ const User = require("../model/User")
 
 const messageCtrl = {
     createMessage: async(req, res)=>{
-        const {content, chat} = req.body
+        const {content, chat, replyMessage} = req.body
         try {
             if(!chat || !content) return res.status(400).json('Fields must not be empty')
-            let newMessage = await Message.create({
+            let newMessage = new Message({
                 content,
                 chat,
-                sender: req.user._id
+                sender: req.user._id,
+                replyMessage
             })
+            await newMessage.save()
             newMessage = await newMessage.populate('sender', 'name picture')
             newMessage = await newMessage.populate('chat')
+            newMessage = await newMessage.populate({
+                path: 'replyMessage',
+                populate: {path: 'sender'}
+            })
             newMessage = await User.populate(newMessage, {
                 path: "chat.users",
                 select: "name picture email"
@@ -32,7 +38,15 @@ const messageCtrl = {
     fetchChats: async(req, res)=>{
         const {chatId} = req.params
         try {
-            const chats = await Message.find({chat: chatId}).populate('chat').populate('sender')
+            const chats = await Message.find({chat: chatId})
+            .populate('chat')
+            .populate('sender')
+            .populate({
+                path: 'replyMessage',
+                populate: {
+                    path: 'sender'
+                }
+            })
             return res.status(200).json(chats)
         } catch (error) {
             return res.status(500).json(error)
@@ -48,6 +62,15 @@ const messageCtrl = {
                 result = await Message.findByIdAndDelete(message)
             }
             return res.status(200).json(result)
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+    },
+    editMessage: async(req, res)=>{
+        try {
+            const message = await Message.findByIdAndUpdate(req.params.id, {
+                $set: req.body
+            })
         } catch (error) {
             return res.status(500).json(error)
         }

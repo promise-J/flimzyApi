@@ -6,6 +6,13 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    replyMessage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Message'
+    },
+    img: {
+        type: String
+    },
     content: {
         type: String,
         required: true
@@ -13,6 +20,12 @@ const messageSchema = new mongoose.Schema({
     chat: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Chat'
+    },
+    picture: {
+        type: String
+    },
+    audio: {
+        type: String
     }
 }, {timestamps: true})
 
