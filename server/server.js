@@ -87,6 +87,9 @@ sock.on('connection', (socket)=>{
     socket.on('stop typing', (chatId)=>{
         socket.in(chatId).emit('stop typing')
     })
+    socket.on("send friend request", (data)=>{
+        socket.in(data.chatId).emit('notify friend request', data)
+    });
 
 })
 
