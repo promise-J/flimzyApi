@@ -29,7 +29,7 @@ const uploadCtrl = {
             })
         } catch (error) {
             console.log(error, 'the bastard')
-            return res.status(501).json({ msg: error.message })
+            return res.status(501).json(error)
         }
     },
     deleteAvatar: (req, res) => {

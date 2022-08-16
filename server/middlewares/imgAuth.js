@@ -19,7 +19,7 @@ const uploadImage = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error, "the bastard is here");
-    return res.status(501).json({ msg: error.message });
+    return res.status(500).json(error);
   }
 };
 
