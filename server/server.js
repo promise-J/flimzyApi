@@ -34,7 +34,6 @@ const _dirname1 = path.resolve()
 
 app.get('/', (req, res)=>{
     console.log('dev')
-    
     res.send('API is running sucessfully oo')
 })
 

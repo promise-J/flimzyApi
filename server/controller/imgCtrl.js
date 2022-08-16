@@ -12,21 +12,24 @@ const uploadCtrl = {
         try {
             const file = req.files.file
             // return console.log(file)
+            console.log('attempt to upload')
             cloudinary.v2.uploader.upload(file.tempFilePath, {
                 folder: 'Flimzy', width: 350, height: 350, crop: "fill"
             }, async (err, result) => {
                 // console.log('file works')
                 if (err){
+                    console.log(err, 'just the bastard?')
                     removeTmp(file.tempFilePath)
                     throw err
                 }
                 
                 removeTmp(file.tempFilePath)
-                // console.log(result)
+                console.log(result)
                 return res.status(200).json(result)
             })
         } catch (error) {
-            return res.status(500).json({ msg: error.message })
+            console.log(error, 'the bastard')
+            return res.status(501).json({ msg: error.message })
         }
     },
     deleteAvatar: (req, res) => {
