@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth')
 
 router.route('/:userId').get(auth, chatCtrl.accessChat)
 router.route('/chat/:chatId').get(auth, chatCtrl.getSingleChat)
+router.route('/messages/:chatId').get(auth, chatCtrl.getChatMessages)
 router.route('/').get(auth, chatCtrl.userChats)
 router.route('/group').post(auth, chatCtrl.createGroup)
 router.route('/renamegroup/:chatId').put(auth, chatCtrl.renameGroup)

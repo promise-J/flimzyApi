@@ -1,4 +1,5 @@
 const Chat = require('../model/Chat')
+const Message = require('../model/Message')
 const User = require('../model/User')
 
 module.exports = {
@@ -113,7 +114,18 @@ module.exports = {
         const {chatId} = req.params
         try {
             const deletedChat = await Chat.findByIdAndDelete(chatId)
-            return res.status(200).json(deletedChat)
+            if(req.query.userId){
+                await User.findByIdAndUpdate(req.user._id, {
+                    $pull: {friends: req.query.userId}
+                })
+                await User.findByIdAndUpdate(req.query.userId, {
+                    $pull: {friends: req.user._id}
+                })
+                await User.findById(req.user._id)
+            }else{
+                await Chat.findByIdAndDelete(chatId)
+            }
+            return res.status(200).json('Chat deleted')
         } catch (error) {
             return res.status(500).json(error)
         }
@@ -123,6 +135,14 @@ module.exports = {
             await Chat.findOneAndDelete({_id: req.params.chatId})
             return res.status(200).json('Chat Deleted')
         } catch (error) {
+            return res.status(500).json(error)
+        }
+    },
+    getChatMessages: async(req, res)=>{
+        try{
+            const messages = await Message.find({chat: req.params.chatId})
+            return res.status(200).json(messages)
+        }catch(error){
             return res.status(500).json(error)
         }
     }

@@ -13,6 +13,9 @@ const messageSchema = new mongoose.Schema({
     img: {
         type: String
     },
+    imgPrev: {
+        type: String
+    },
     content: {
         type: String,
         required: true
@@ -20,9 +23,6 @@ const messageSchema = new mongoose.Schema({
     chat: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Chat'
-    },
-    picture: {
-        type: String
     },
     audio: {
         type: String

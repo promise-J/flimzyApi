@@ -4,14 +4,12 @@ const User = require("../model/User")
 
 const messageCtrl = {
     createMessage: async(req, res)=>{
-        const {content, chat, replyMessage} = req.body
+        const {content, chat, replyMessage, img} = req.body
         try {
             if(!chat || !content) return res.status(400).json('Fields must not be empty')
             let newMessage = new Message({
-                content,
-                chat,
                 sender: req.user._id,
-                replyMessage
+                ...req.body
             })
             await newMessage.save()
             newMessage = await newMessage.populate('sender', 'name picture')

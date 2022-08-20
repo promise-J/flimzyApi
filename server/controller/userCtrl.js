@@ -62,7 +62,15 @@ module.exports = {
     res.status(200).json(users);
   },
   getUser: async (req, res) => {
-    return res.status(200).json(req.user);
+    try {
+      let user = await User.findById(req.user._id);
+      user = await User.populate(user, { path: "request" });
+    //   user = await User.populate(user, { path: "friends" });
+      return res.status(200).json(user);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
   },
   logout: async (req, res) => {
     const key = req.cookies["secretToken"];
@@ -108,15 +116,15 @@ module.exports = {
       const isUser = await User.findById(req.user._id);
       if (!isUser.request.includes(req.params.userId))
         return res.status(400).json("No request from user");
-    //   const requester = await User.findById(req.user._id);
-      const notif1 = await Notification.create({
-        userId: req.params.userId,
-        content: `${requester.username} sent you a connection request`,
-      });
-      const notif2 = await Notification.create({
-        userId: req.user._id,
-        content: `${requester.username} sent you a connection request`,
-      });
+      //   const requester = await User.findById(req.user._id);
+      //   const notif1 = await Notification.create({
+      //     userId: req.params.userId,
+      //     content: `${requester.username} sent you a connection request`,
+      //   });
+      //   const notif2 = await Notification.create({
+      //     userId: req.user._id,
+      //     content: `${requester.username} sent you a connection request`,
+      //   });
       let result = await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -125,7 +133,37 @@ module.exports = {
         { new: true }
       );
 
-      return res.status(200).json({ result, notif1, notif2 });
+      return res.status(200).json({ result });
+    } catch (error) {
+      console.log(error, "from here");
+      return res.status(500).json(error);
+    }
+  },
+  populateFriendList: async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      let result;
+      if (user.request.includes(req.params.userId)) {
+        await User.findByIdAndUpdate(
+          req.user._id,
+          {
+            $pull: { request: req.params.userId },
+            $push: { friends: req.params.userId },
+          },
+          { new: true }
+        );
+        await User.findByIdAndUpdate(
+          req.params.userId,
+          {
+            $pull: { request: req.user._id },
+            $push: { friends: req.user._id },
+          },
+          { new: true }
+        );
+        return res.status(200).json("Friendship established");
+      }else{
+        return res.status(400).json('Not supposed')
+      }
     } catch (error) {
       return res.status(500).json(error);
     }

@@ -18,17 +18,15 @@ const uploadCtrl = {
             }, async (err, result) => {
                 // console.log('file works')
                 if (err){
-                    console.log(err, 'just the bastard?')
                     removeTmp(file.tempFilePath)
                     throw err
                 }
                 
                 removeTmp(file.tempFilePath)
-                console.log(result)
+                // console.log(result)
                 return res.status(200).json(result)
             })
         } catch (error) {
-            console.log(error, 'the bastard')
             return res.status(501).json(error)
         }
     },

@@ -18,7 +18,6 @@ const uploadImage = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.log(error, "the bastard is here");
     return res.status(500).json(error);
   }
 };
@@ -28,7 +27,6 @@ module.exports = uploadImage;
 const removeTmp = (path) => {
   fs.unlink(path, (err) => {
     if (err) {
-      console.log(err);
       throw err;
     }
     console.log(path + " has been deleted.");
