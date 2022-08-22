@@ -9,6 +9,10 @@ const NotificationSchema = new mongoose.Schema(
     },
     content: {
         type: String
+    },
+    typeOf: {
+      type: String,
+      enum: ['request', 'response', 'missed', 'unmissed']
     }
   },
   { timestamps: true }

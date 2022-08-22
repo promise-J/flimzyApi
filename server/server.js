@@ -77,10 +77,15 @@ sock.on("connection", (socket) => {
     socket.in(info.userToCall).emit("hey", {from: info.from, signal: info.signalData});
   });
   socket.on("acceptCall", (info) => {
-    console.log(info, 'the accept call')
     socket
       .in(info.to._id)
       .emit("callAccepted", { from: info.to, signal: info.signalData });
+  });
+  socket.on("rejectCall", (info) => {
+    socket.in(info).emit('rejectedCall')
+  });
+  socket.on("switchVideo", (info) => {
+    socket.in(info?.user).emit('switchVideo', info)
   });
 
   socket.on("typing", (chatObject, currentUser) => {
