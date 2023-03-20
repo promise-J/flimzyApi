@@ -14,6 +14,7 @@ module.exports = {
   },
   login: async (req, res) => {
     const { email, password } = req.body;
+    console.log('debugging')
     if (!password || !email)
       return res.status(400).json("Fields cannot be empty");
     const existUser = await User.findOne({ email });
